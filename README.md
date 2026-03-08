@@ -1,16 +1,19 @@
-# React + Vite
+# 📝 Modern To-Do List
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplikasi daftar tugas sederhana namun bertenaga yang dibangun dengan **React** dan **Tailwind CSS**. Proyek ini dirancang untuk membantu produktivitas harian dengan fitur penyimpanan lokal.
 
-Currently, two official plugins are available:
+## ✨ Fitur Utama
+- **CRUD Lengkap**: Tambah, Baca, Edit, dan Hapus tugas.
+- **Persistensi Data**: Menggunakan `localStorage` agar data tidak hilang saat refresh.
+- **Responsive Design**: Tampilan menarik dan nyaman di berbagai ukuran layar (Desktop/Mobile).
+- **Modern UI**: Dibangun dengan palet warna profesional dan animasi transisi halus.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Teknologi
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📦 Cara Menjalankan
+1. Clone repositori ini:
+   ```bash
+   git clone [https://github.com/username-kamu/nama-repo.git](https://github.com/kurniarahman412/latihan-react.git)
