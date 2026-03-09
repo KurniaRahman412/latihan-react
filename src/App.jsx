@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-function DisplayList({ data, setData, hapusTodo, tugasSelesai }) {
+function DisplayList({ data, hapusTodo, toggleStatus, updateTodo }) {
   const [editId, setEditId] = useState(null)
   const [editText, setEditText] = useState('')
 
@@ -13,19 +13,13 @@ function DisplayList({ data, setData, hapusTodo, tugasSelesai }) {
     setEditId(null)
     setEditText('')
   }
-
-  const simpan = (id) => {
-    const updateTodo = data.map((item) => {
-      if (item.id === id) {
-        return { ...item, text: editText }
-      }
-      return item
-    })
-    setData(updateTodo)
+  const simpan = (id)=>{
+    updateTodo(id, editText)
     setEditId(null)
   }
 
   return (
+    
     <ul className="w-full space-y-3">
       {data.map(d => (
         <li key={d.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
@@ -37,7 +31,7 @@ function DisplayList({ data, setData, hapusTodo, tugasSelesai }) {
                 className="grow border-2 border-blue-400 rounded px-2 py-1 outline-none"
                 autoFocus
               />
-              <button onClick={() => simpan(editId)} className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-blue-700">Simpan</button>
+              <button onClick={() => simpan(d.id)} className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-blue-700">Simpan</button>
               <button onClick={batal} className="bg-gray-300 text-gray-700 px-3 py-1 rounded-md text-sm font-semibold hover:bg-gray-400">Batal</button>
             </div>
           ) : (
@@ -49,7 +43,7 @@ function DisplayList({ data, setData, hapusTodo, tugasSelesai }) {
                   onClick={() => handleEdit(d)}
                 > Edit </button>
                 <button
-                onClick={()=> tugasSelesai(d.id)}
+                onClick={()=> toggleStatus(d.id)}
                 className="text-green-600 bg-red-50 px-3 py-1 rounded-md text-sm font-bold hover:bg-green-300 transition-colors"
                 >Selesai</button>
                 <button
@@ -70,7 +64,7 @@ function TambahList({ tambah }) {
 
   const handleTambah = () => {
     if (!data.trim()) return // Mencegah input kosong
-    tambah({ id: Date.now(), text: data })
+    tambah({ id: Date.now(), text: data, isCompleted: false })
     setData("")
   }
 
@@ -91,21 +85,20 @@ function TambahList({ tambah }) {
   )
 }
 
-function DisplaySelesai({todoSelesai, kembalikan, hapusSelesai}){
+function DisplaySelesai({ data, toggleStatus, hapusTodo}){
   return(
-    <section className="my-4">
-      
+    <section className="my-4">  
       <ul>
-        {todoSelesai.map((s)=>(
+        {data.map((s)=>(
           <li key={s.id} className="flex items-center justify-between bg-gray-300 p-2 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
             <span className="text-gray-700 text-sm">{s.text}</span>
             <div className="flex justify-between gap-3">
               <button
-              onClick={()=>kembalikan(s.id)}
+              onClick={()=>toggleStatus(s.id)}
               className="text-gray-600 px-3 py-1 rounded-md text-sm font-bold hover:text-green-600 hover:bg-green-300 transition-colors"
               >Kembalikan</button>
               <button
-              onClick={()=>hapusSelesai(s.id)}
+              onClick={()=>hapusTodo(s.id)}
               className="text-white bg-gray-400 px-3 py-1 rounded-md text-sm font-bold hover:bg-gray-700 transition-colors"
               >Hapus</button>
             </div>
@@ -123,58 +116,51 @@ function App() {
       return JSON.parse(saveTodo)
     }
     return [
-      { id: 1, text: "Sahur" },
-      { id: 2, text: "Bukber" },
+      { id: 1, text: "Sahur", isCompleted: false },
+      { id: 2, text: "Bukber", isCompleted: false },
     ]
   })
-  const [todoSelesai,setTodoSelesai] = useState(()=>{
-    const saveTodo = localStorage.getItem("todo-selesai");
-    if(saveTodo){
-      return JSON.parse(saveTodo)
-    }
-    return []
-  })
-
+  const activeTodo = todo.filter(t => !t.isCompleted)
+  const completedTodo = todo.filter(t => t.isCompleted)
   useEffect( ()=>{
     localStorage.setItem("my-todolist", JSON.stringify(todo));
-    localStorage.setItem("todo-selesai", JSON.stringify(todoSelesai))
-  }, [todo, todoSelesai])
+  }, [todo])
 
   
   const tambahTodo = (baru) => {
     setTodo([...todo, baru])
   }
 
+  const updateTodo = (id, text) => {
+    const updateTodo = todo.map((item) => {
+      if (item.id === id) {
+        return { ...item, text: text }
+      }
+      return item
+    })
+    setTodo(updateTodo)
+  }
+
   const hapusTodo = (id) => {
     setTodo(todo.filter((item) => item.id !== id))
   }
-  const tugasSelesai = (id)=>{
-    const pilih = todo.find(item => item.id === id)
-    setTodoSelesai([...todoSelesai, pilih])
-    hapusTodo(id)
+  const toggleStatus = (id)=>{
+    const update = todo.map(item => item.id === id ? {...item, isCompleted:!item.isCompleted}: item)
+    setTodo(update)
   }
-  const kembalikan = (id)=>{
-    const pilih = todoSelesai.find(item => item.id === id)
-    setTodo([...todo, pilih])
-    setTodoSelesai(todoSelesai.filter(item => item.id !== id))
-  }
-  const hapusSelesai = (id)=>{
-    setTodoSelesai(todoSelesai.filter(item => item.id !== id))
-  }
+
   return (
     <div className="min-h-screen bg-gray-300 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-8">
         <h1 className="text-2xl font-extrabold text-gray-800 mb-6 text-center border-b pb-4">
           📝 My To-Do List
         </h1>
-        <DisplayList data={todo} setData={setTodo} hapusTodo={hapusTodo} tugasSelesai={tugasSelesai}/>
+        <DisplayList data={activeTodo} hapusTodo={hapusTodo} toggleStatus={toggleStatus} updateTodo={updateTodo}/>
         <TambahList tambah={tambahTodo} />
-        {todoSelesai.length !== 0 ? 
-        (<h1 className="text-md font-extrabold text-gray-800 mt-20 text-center">
-        ✅ To-Do Selesai
-        </h1>
-        ) : (<div></div>)}
-        <DisplaySelesai todoSelesai={todoSelesai} kembalikan={kembalikan} hapusSelesai={hapusSelesai}/>
+        {todo.some(item => item.isCompleted) && (
+          <h2 className="text-xl font-extrabold text-gray-800 my-6 text-center">✅ To-Do Selesai</h2>
+        )}
+        <DisplaySelesai data={completedTodo} toggleStatus={toggleStatus} hapusTodo={hapusTodo}/>
       </div>
     </div>
   )
